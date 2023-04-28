@@ -34,17 +34,37 @@ const BrainBrowsR = () => {
           brain computer interface to control Instagram with.
         </p>
         <h2>Relevance</h2>
-        <p></p>
+        <p>
+          Around the world people are living with conditions such as ALS and
+          locked-in syndrome, which inhibits them from using their hands, mouth
+          and legs. This makes them unable to communicate with the people around
+          them.
+        </p>
         <h2>Implementation</h2>
-        <p></p>
+        <p>
+          The Implementation of BrainBrowsR was created in JavaScript and
+          Python. More information on the project can be found on our GitHub.
+        </p>
       </section>
       <div className={styles.grid}>
-        <ProjectCard
-          title="Check it out on github!"
-          image="/images/profile.jpg"
-          description=""
-          link="/projects/brainbrowsr"
-        />
+        <Link
+          href={"https://github.com/NeuroTech-Leuven/BrainBrowsR"}
+          className={styles.card}
+        >
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <Image
+              priority
+              src="/images/github.svg"
+              alt=""
+              width={50}
+              height={50}
+              className={styles.vercelLogo}
+            />
+            <h2 style={{ marginLeft: "10px", marginBottom: "0" }}>
+              {"Check it out on GitHub!"}
+            </h2>
+          </div>
+        </Link>
       </div>
       <div margin="3rem 0 0">
         <Link href="/">← Back to home</Link>
