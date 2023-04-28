@@ -3,6 +3,7 @@ import Head from "next/head";
 import Layout from "@/components/layout";
 import Image from "next/image";
 import utilStyles from "@/styles/utils.module.css";
+import styles from "@/styles/Home.module.css";
 
 const About = () => {
   return (
@@ -24,6 +25,7 @@ const About = () => {
           height={144}
           width={144}
           alt=""
+          className={styles.projectIcon}
         />
       </div>
       <section className={utilStyles.headingMd}>

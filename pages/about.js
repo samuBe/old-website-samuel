@@ -3,6 +3,7 @@ import Head from "next/head";
 import Layout from "@/components/layout";
 import Image from "next/image";
 import utilStyles from "../styles/utils.module.css";
+import ContactGrid from "@/components/contactgrid";
 
 const About = () => {
   return (
@@ -15,6 +16,7 @@ const About = () => {
           alignItems: "center",
           display: "flex",
           flexDirection: "column",
+          marginBottom: "30px",
         }}
       >
         <h1>About Samuel Berton</h1>
@@ -26,10 +28,12 @@ const About = () => {
           width={144}
           alt=""
         />
+        <ContactGrid />
       </div>
       <section className={utilStyles.headingMd}>
         <p>
           Hello I'm Samuel. I'm studying Mathematical Engineering at KU Leuven.
+          Feel free to contact me about anything!
         </p>
       </section>
       <div margin="3rem 0 0">
