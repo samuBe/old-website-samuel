@@ -136,6 +136,15 @@
     margin-bottom: 120px;
     max-width: 320px;
     text-align: center;
+    align-items: center;
+  }
+
+  .imageContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin-bottom: 1rem;
   }
 
   .card {
@@ -211,6 +220,10 @@
 
 @media (prefers-color-scheme: dark) {
   .vercelLogo {
+    filter: invert(1);
+  }
+
+  .projectIcon {
     filter: invert(1);
   }
 

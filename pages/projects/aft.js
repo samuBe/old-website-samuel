@@ -3,6 +3,7 @@ import Head from "next/head";
 import Layout from "@/components/layout";
 import Image from "next/image";
 import utilStyles from "@/styles/utils.module.css";
+import styles from "@/styles/Home.module.css";
 
 const AFT = () => {
   return (
@@ -18,16 +19,6 @@ const AFT = () => {
         }}
       >
         <h1>Marketing@AFT</h1>
-        <div>
-          <Image
-            priority
-            src="/images/profile.jpg"
-            className={utilStyles.borderCircle}
-            width={144}
-            height={144}
-            alt=""
-          />
-        </div>
       </div>
       <section className={utilStyles.headingMd}>
         <h2>What is marketing?</h2>
@@ -43,6 +34,23 @@ const AFT = () => {
           programs such as Illustrator and PhotoShop have become my second
           nature.
         </p>
+        <div className={styles.grid}>
+          <Link href={"https://www.aftleuven.be"} className={styles.card}>
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <Image
+                priority
+                src="/images/aft.svg"
+                alt=""
+                width={50}
+                height={50}
+                className={styles.vercelLogo}
+              />
+              <h2 style={{ marginLeft: "10px", marginBottom: "0" }}>
+                {"Check out AFT!"}
+              </h2>
+            </div>
+          </Link>
+        </div>
       </section>
       <div margin="3rem 0 0">
         <Link href="/projects">← Back to projects</Link>

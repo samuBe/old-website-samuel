@@ -5,14 +5,14 @@ import styles from "@/styles/Home.module.css";
 const ProjectCard = ({ image, title, description, link }) => {
   return (
     <Link href={link} className={styles.card}>
-      <div>
+      <div className={styles.imageContainer}>
         <Image
           priority
           src={image}
           alt=""
           width={50}
           height={50}
-          className={styles.vercelLogo}
+          className={styles.projectIcon}
         />
       </div>
       <h2>{title}</h2>
