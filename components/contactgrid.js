@@ -22,10 +22,18 @@ const ContactGrid = () => {
           alt=""
           width={50}
           height={50}
+          className={styles.vercelLogo}
         />
       </Link>
       <button className={styles.card} onClick={handleClick}>
-        <Image priority src="images/email.svg" alt="" width={50} height={50} />
+        <Image
+          priority
+          src="images/email.svg"
+          alt=""
+          width={50}
+          height={50}
+          className={styles.vercelLogo}
+        />
       </button>
     </div>
   );
