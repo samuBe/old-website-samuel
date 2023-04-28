@@ -9,10 +9,33 @@ import { Inter } from "next/font/google";
 
 const inter = Inter({ subsets: ["latin"] });
 
+const projects = {
+  projects: [
+    {
+      title: "Thesis",
+      image: "/images/drone.svg",
+      description: "My masterthesis about Laser-powered drones.",
+      link: "/thesis",
+    },
+    {
+      title: "BrainBrowsR",
+      image: "/images/brain.svg",
+      description: "A brain-computer interface for Instagram.",
+      link: "/projects/brainbrowsr",
+    },
+    {
+      title: "Marketing@AFT",
+      image: "/images/marketing.svg",
+      description: "My experience as part of the marketing team at AFT Leuven.",
+      link: "/projects/aft",
+    },
+  ],
+};
+
 const Projects = () => {
   return (
     <>
-      <main className={`${styles.main} ${inter.className}`}>
+      <Layout>
         <Head>
           <title>Projects</title>
         </Head>
@@ -25,44 +48,25 @@ const Projects = () => {
         >
           <h1>Projects</h1>
           <section className={utilStyles.headingMd}>
-            <p>These are some of my projects that I'm most proud of.</p>
-            <div margin="3rem 0 0">
-              <Link href="/">← Back to home</Link>
-            </div>
+            <p>These are my projects that I am most proud of.</p>
           </section>
         </div>
         <div></div>
-        <div className={styles.center}>
-          <Image
-            className={styles.logo}
-            src="/next.svg"
-            alt="Next.js Logo"
-            width={180}
-            height={37}
-            priority
-          />
-        </div>
         <div className={styles.grid}>
-          <ProjectCard
-            title={"Thesis"}
-            image="/images/profile.jpg"
-            description="My masterthesis about Laser-powered drones."
-            link="/thesis"
-          />
-          <ProjectCard
-            title={"BrainBrowsR"}
-            image="/images/profile.jpg"
-            description="A brain-computer interface for Instagram."
-            link="/projects/brainbrowsr"
-          />
-          <ProjectCard
-            title={"Marketing@AFT"}
-            image="/images/profile.jpg"
-            description="My masterthesis about Laser-powered drones."
-            link="/projects/aft"
-          />
+          {projects.projects.map((val) => (
+            <ProjectCard
+              key={val.title}
+              title={val.title}
+              image={val.image}
+              description={val.description}
+              link={val.link}
+            />
+          ))}
         </div>
-      </main>
+        <div margin="3rem 0 0">
+          <Link href="/">← Back to home</Link>
+        </div>
+      </Layout>
     </>
   );
 };

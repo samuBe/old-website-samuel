@@ -1,0 +1,31 @@
+.container {
+  display: block;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  min-width: 300px;
+}
+
+.large {
+  font-size: 3rem;
+  font-weight: bold;
+  text-align: center;
+  word-wrap: normal;
+}
+
+.text {
+  font-size: 24px;
+  font-weight: bold;
+  animation: slide-in 1s forwards infinite;
+}
+
+@keyframes slide-in {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}

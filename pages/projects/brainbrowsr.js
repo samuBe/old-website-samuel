@@ -67,7 +67,7 @@ const BrainBrowsR = () => {
         </Link>
       </div>
       <div margin="3rem 0 0">
-        <Link href="/">← Back to home</Link>
+        <Link href="/projects">← Back to projects</Link>
       </div>
     </Layout>
   );
