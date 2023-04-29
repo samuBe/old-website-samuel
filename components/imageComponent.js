@@ -1,5 +1,6 @@
 import { useTheme } from "next-themes";
 import Image from "next/image";
+import { useState, useEffect } from "react";
 
 function ImageComponent(name) {
   const [isDarkMode, setIsDarkMode] = useState(false);
