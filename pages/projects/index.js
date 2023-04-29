@@ -51,7 +51,6 @@ const Projects = () => {
             <p>These are my projects that I am most proud of.</p>
           </section>
         </div>
-        <div></div>
         <div className={styles.grid}>
           {projects.projects.map((val) => (
             <ProjectCard

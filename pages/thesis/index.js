@@ -4,6 +4,7 @@ import Layout from "@/components/layout";
 import Image from "next/image";
 import utilStyles from "@/styles/utils.module.css";
 import styles from "@/styles/Home.module.css";
+import ImageComponent from "@/components/imageComponent.js";
 
 const About = () => {
   return (
@@ -60,6 +61,7 @@ const About = () => {
         </ol>
         <h2>Approach</h2>
         <h3>Single drone</h3>
+        <ImageComponent name="/images/thesis/approach_1" />
         <p>Control a single drone so that it tracks a given path.</p>
         <p>Goals:</p>
         <ol style={{ listStylePosition: "inside" }}>
@@ -67,20 +69,26 @@ const About = () => {
           <li>Familiarize with MPC,</li>
           <li>Use as benchmark.</li>
         </ol>
+
         <h3>Decoupled</h3>
+        <ImageComponent name="/images/thesis/approach_2" />
         <p>Track a drone using the laser to deliver power.</p>
         <p>Goals:</p>
         <ol style={{ listStylePosition: "inside" }}>
           <li>Introduce the ground station,</li>
           <li>Improve this by coupling.</li>
         </ol>
+
         <h3>Coupled</h3>
+        <ImageComponent name="/images/thesis/approach_3" />
         <p>
           In the coupled approach, the expected future position of the drone is
           used in calculating the control action of the ground station. This
           should improve the charging.
         </p>
+
         <h3>Multi drone</h3>
+        <ImageComponent name="/images/thesis/approach_4" />
         <p>
           When there is no direct line-of-sight, one drone is used to reflect
           the laser onto another to charge it with a mirror.
