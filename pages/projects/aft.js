@@ -34,24 +34,24 @@ const AFT = () => {
           programs such as Illustrator and PhotoShop have become my second
           nature.
         </p>
-        <div className={styles.grid}>
-          <Link href={"https://www.aftleuven.be"} className={styles.card}>
-            <div style={{ display: "flex", alignItems: "center" }}>
-              <Image
-                priority
-                src="/images/aft.svg"
-                alt=""
-                width={50}
-                height={50}
-                className={styles.vercelLogo}
-              />
-              <h2 style={{ marginLeft: "10px", marginBottom: "0" }}>
-                {"Check out AFT!"}
-              </h2>
-            </div>
-          </Link>
-        </div>
       </section>
+      <div className={styles.grid}>
+        <Link href={"https://www.aftleuven.be"} className={styles.card}>
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <Image
+              priority
+              src="/images/aft.svg"
+              alt=""
+              width={50}
+              height={50}
+              className={styles.vercelLogo}
+            />
+            <h2 style={{ marginLeft: "10px", marginBottom: "0" }}>
+              {"Check out AFT!"}
+            </h2>
+          </div>
+        </Link>
+      </div>
       <div margin="3rem 0 0">
         <Link href="/projects">← Back to projects</Link>
       </div>

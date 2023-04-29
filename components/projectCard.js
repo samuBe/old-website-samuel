@@ -15,8 +15,10 @@ const ProjectCard = ({ image, title, description, link }) => {
           className={styles.projectIcon}
         />
       </div>
-      <h2>{title}</h2>
-      <p>{description}</p>
+      <div>
+        <h2>{title}</h2>
+        <p>{description}</p>
+      </div>
     </Link>
   );
 };

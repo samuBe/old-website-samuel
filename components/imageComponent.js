@@ -2,11 +2,21 @@ import { useTheme } from "next-themes";
 import Image from "next/image";
 
 function ImageComponent(name) {
-  const { theme } = useTheme();
-  const isDarkMode = theme === "dark";
+  const [isDarkMode, setIsDarkMode] = useState(false);
 
-  console.log(name);
-  console.log(`${name.name}_light.png`);
+  useEffect(() => {
+    const darkModeMediaQuery = window.matchMedia(
+      "(prefers-color-scheme: dark)"
+    );
+    setIsDarkMode(darkModeMediaQuery.matches);
+    darkModeMediaQuery.addEventListener("change", (e) =>
+      setIsDarkMode(e.matches)
+    );
+    return () =>
+      darkModeMediaQuery.removeEventListener("change", (e) =>
+        setIsDarkMode(e.matches)
+      );
+  }, []);
 
   return (
     <>
