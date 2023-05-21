@@ -8,7 +8,6 @@ import {
   Sphere,
   useTexture,
 } from "@react-three/drei";
-import myJson from "@/public/debug.json";
 import { useFrame } from "@react-three/fiber";
 import { RepeatWrapping, NearestFilter, DoubleSide } from "three";
 import css from "@/styles/Home.module.css";
@@ -19,7 +18,7 @@ import * as THREE from "three";
 
 const IndContext = React.createContext({ ind: 0, setInd: () => {} });
 
-function Drone({ index }) {
+function Drone({ states }) {
   const mesh = useRef();
   const [model, setModel] = useState();
 
@@ -48,18 +47,21 @@ function Drone({ index }) {
 
   useEffect(() => {
     if (mesh.current) {
-      mesh.current.position.x = myJson.results[index].drone.states[0];
-      mesh.current.position.y = myJson.results[index].drone.states[1];
-      mesh.current.position.z = myJson.results[index].drone.states[2];
+      mesh.current.position.x = states[0];
+      mesh.current.position.y = states[1];
+      mesh.current.position.z = states[2];
+      mesh.current.rotation._x = states[6];
+      mesh.current.rotation._y = states[7];
+      mesh.current.rotation._z = states[8];
     }
-  }, [index]);
+  }, [states]);
 
   return model ? <primitive ref={mesh} object={model} /> : null;
 }
 
 function Ground() {
   const texture = useTexture("/textures/grass.png");
-  const planeSize = 8000;
+  const planeSize = 5000;
   const repeats = planeSize / 2;
 
   texture.wrapS = texture.wrapT = RepeatWrapping;
@@ -73,19 +75,23 @@ function Ground() {
   );
 }
 
-const Players = () => {
+const Players = ({ speed, isPaused, max, timeStep }) => {
   const { ind, setInd } = useContext(IndContext);
   let elapsedTime = useRef(0);
 
   useFrame((state, delta) => {
     elapsedTime.current += delta;
 
-    if (elapsedTime.current > myJson.timeStep) {
-      let newInd = ind + 1;
+    if (elapsedTime.current * Math.abs(speed) > timeStep) {
+      let newInd = isPaused ? ind : ind + Math.sign(speed);
 
       // Ensure the index stays within the bounds of the array
-      if (newInd >= myJson.results.length) {
+      if (newInd >= max) {
         newInd = 0;
+      }
+
+      if (newInd < 0) {
+        newInd = max - 1;
       }
 
       setInd(newInd);
@@ -96,13 +102,38 @@ const Players = () => {
   return <></>;
 };
 
-const Scene = () => {
-  return null;
+const Scene = ({ data }) => {
+  const [ind, setInd] = useState(0);
+  const [speed, setSpeed] = useState(1);
+  const [isPaused, setIsPaused] = useState(false);
+
+  return (
+    <IndContext.Provider value={{ ind, setInd }}>
+      <Telemetry
+        current={data.results[ind]}
+        setIsPaused={setIsPaused}
+        setSpeed={setSpeed}
+        isPaused={isPaused}
+      />
+      <Canvas>
+        <color attach="background" args={["#87ceeb"]} />
+        <Ground />
+        <Players
+          speed={speed}
+          isPaused={isPaused}
+          max={data.results.length}
+          timeStep={data.timeStep}
+        />
+        <Drone states={data.results[ind].drone.states} />
+        <OrbitControls />
+        <ambientLight intensity={0.5} />
+        <perspectiveCamera position={[0, 10, 20]} fov={45} />
+      </Canvas>
+    </IndContext.Provider>
+  );
 };
 
 export default function Home() {
-  const res = myJson.results;
-
   const [data, setData] = useState(null);
 
   useEffect(() => {
@@ -118,23 +149,10 @@ export default function Home() {
     })();
   }, []);
 
-  const [ind, setInd] = useState(0);
-
   return (
     <>
       <div className={css.scene}>
-        <IndContext.Provider value={{ ind, setInd }}>
-          <Telemetry current={res[ind]} />
-          <Canvas>
-            <color attach="background" args={["#87ceeb"]} />
-            <Ground />
-            <Players />
-            <Drone index={ind} />
-            <OrbitControls />
-            <ambientLight intensity={0.5} />
-            <perspectiveCamera position={[0, 10, 20]} fov={45} />
-          </Canvas>
-        </IndContext.Provider>
+        {data ? <Scene data={data} /> : <div></div>}
       </div>
     </>
   );
