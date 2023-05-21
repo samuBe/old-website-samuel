@@ -1,5 +1,5 @@
 // pages/index.js
-import React, { Suspense, useEffect, useRef } from "react";
+import React, { Suspense, use, useEffect, useRef } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Plane, Sphere, useTexture } from "@react-three/drei";
 import myJson from "@/public/debug.json";
@@ -11,11 +11,9 @@ import { useState } from "react";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import * as THREE from "three";
 
-function Drone() {
+function Drone({ index }) {
   const mesh = useRef();
   const [model, setModel] = useState();
-  let ind = useRef(0);
-  let elapsedTime = useRef(0);
 
   useEffect(() => {
     const loader = new GLTFLoader();
@@ -40,25 +38,13 @@ function Drone() {
     });
   }, []);
 
-  useFrame((state, delta) => {
-    elapsedTime.current += delta;
-
-    if (elapsedTime.current > myJson.timeStep) {
-      ind.current += 1;
-
-      // Ensure the index stays within the bounds of the array
-      if (ind.current >= myJson.results.length) {
-        ind.current = 0;
-      }
-
-      elapsedTime.current = 0;
-      if (mesh.current) {
-        mesh.current.position.x = myJson.results[ind.current].drone.states[0];
-        mesh.current.position.y = myJson.results[ind.current].drone.states[1];
-        mesh.current.position.z = myJson.results[ind.current].drone.states[2];
-      }
+  useEffect(() => {
+    if (mesh.current) {
+      mesh.current.position.x = myJson.results[index].drone.states[0];
+      mesh.current.position.y = myJson.results[index].drone.states[1];
+      mesh.current.position.z = myJson.results[index].drone.states[2];
     }
-  });
+  }, [index]);
 
   return model ? <primitive ref={mesh} object={model} /> : null;
 }
@@ -79,6 +65,29 @@ function Ground() {
   );
 }
 
+const Players = () => {
+  const [ind, setInd] = useState(0);
+  let elapsedTime = useRef(0);
+
+  useFrame((state, delta) => {
+    elapsedTime.current += delta;
+
+    if (elapsedTime.current > myJson.timeStep) {
+      let newInd = ind + 1;
+
+      // Ensure the index stays within the bounds of the array
+      if (newInd >= myJson.results.length) {
+        newInd = 0;
+      }
+
+      setInd(newInd);
+      elapsedTime.current = 0;
+    }
+  });
+
+  return <Drone index={ind} />;
+};
+
 export default function Home() {
   console.log(myJson);
 
@@ -86,10 +95,8 @@ export default function Home() {
     <div className={css.scene}>
       <Canvas>
         <color attach="background" args={["#87ceeb"]} />
-        <Suspense fallback={null}>
-          <Drone />
-          <Ground />
-        </Suspense>
+        <Ground />
+        <Players />
         <OrbitControls />
         <ambientLight intensity={0.5} />
         <perspectiveCamera position={[0, 10, 20]} fov={45} />
