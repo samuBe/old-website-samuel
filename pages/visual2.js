@@ -82,14 +82,6 @@ function Ground() {
 export default function Home() {
   console.log(myJson);
 
-  const [animationTime, setAnimationTime] = useState(0);
-  const droneRef = useRef({ x: 0, y: 0, z: 0 });
-  const cameraRef = useRef();
-
-  const handleTimeUpdate = (time) => {
-    setAnimationTime(time);
-  };
-
   return (
     <div className={css.scene}>
       <Canvas>
