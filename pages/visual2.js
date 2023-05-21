@@ -1,7 +1,13 @@
 // pages/index.js
-import React, { Suspense, use, useEffect, useRef } from "react";
+import React, { Suspense, use, useContext, useEffect, useRef } from "react";
 import { Canvas } from "@react-three/fiber";
-import { OrbitControls, Plane, Sphere, useTexture } from "@react-three/drei";
+import {
+  Html,
+  OrbitControls,
+  Plane,
+  Sphere,
+  useTexture,
+} from "@react-three/drei";
 import myJson from "@/public/debug.json";
 import { useFrame } from "@react-three/fiber";
 import { RepeatWrapping, NearestFilter, DoubleSide } from "three";
@@ -10,6 +16,8 @@ import Telemetry from "@/components/telemetry";
 import { useState } from "react";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import * as THREE from "three";
+
+const IndContext = React.createContext({ ind: 0, setInd: () => {} });
 
 function Drone({ index }) {
   const mesh = useRef();
@@ -66,7 +74,7 @@ function Ground() {
 }
 
 const Players = () => {
-  const [ind, setInd] = useState(0);
+  const { ind, setInd } = useContext(IndContext);
   let elapsedTime = useRef(0);
 
   useFrame((state, delta) => {
@@ -85,22 +93,49 @@ const Players = () => {
     }
   });
 
-  return <Drone index={ind} />;
+  return <></>;
+};
+
+const Scene = () => {
+  return null;
 };
 
 export default function Home() {
-  console.log(myJson);
+  const res = myJson.results;
+
+  const [data, setData] = useState(null);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const response = await fetch("/debug.json");
+        const dat = await response.json();
+        console.log("this");
+        setData(dat);
+      } catch (error) {
+        console.log(error);
+      }
+    })();
+  }, []);
+
+  const [ind, setInd] = useState(0);
 
   return (
-    <div className={css.scene}>
-      <Canvas>
-        <color attach="background" args={["#87ceeb"]} />
-        <Ground />
-        <Players />
-        <OrbitControls />
-        <ambientLight intensity={0.5} />
-        <perspectiveCamera position={[0, 10, 20]} fov={45} />
-      </Canvas>
-    </div>
+    <>
+      <div className={css.scene}>
+        <IndContext.Provider value={{ ind, setInd }}>
+          <Telemetry current={res[ind]} />
+          <Canvas>
+            <color attach="background" args={["#87ceeb"]} />
+            <Ground />
+            <Players />
+            <Drone index={ind} />
+            <OrbitControls />
+            <ambientLight intensity={0.5} />
+            <perspectiveCamera position={[0, 10, 20]} fov={45} />
+          </Canvas>
+        </IndContext.Provider>
+      </div>
+    </>
   );
 }
