@@ -17,12 +17,19 @@ import { useState } from "react";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import * as THREE from "three";
 import { useThree } from "@react-three/fiber";
+import { zip } from "lodash";
 
 const IndContext = React.createContext({ ind: 0, setInd: () => {} });
 
-function Drone({ states }) {
+function limitedPush(arr, element, maxSize) {
+  arr.push(element);
+  return arr.slice(Math.max(arr.length - maxSize, 0));
+}
+
+function Drone({ states, color }) {
   const mesh = useRef();
   const [model, setModel] = useState();
+  const points = useRef([]);
 
   useEffect(() => {
     const loader = new GLTFLoader();
@@ -48,6 +55,16 @@ function Drone({ states }) {
   }, []);
 
   useEffect(() => {
+    const displacement = Math.sqrt(
+      (points.current[points.current.length - 1] ?? states).reduce(
+        (sum, value, index) => sum + (value - states[index]) ** 2,
+        0
+      )
+    );
+    if (displacement > 1) {
+      points.current = [];
+    }
+    points.current = limitedPush(points.current, states.slice(0, 3), 20);
     if (mesh.current) {
       mesh.current.position.x = states[0];
       mesh.current.position.y = states[1];
@@ -58,7 +75,23 @@ function Drone({ states }) {
     }
   }, [states]);
 
-  return model ? <primitive ref={mesh} object={model} /> : null;
+  return (
+    <>
+      <Line
+        points={
+          points.current.length < 2
+            ? [
+                [0, 0, 0],
+                [0, 0, 0],
+              ]
+            : points.current
+        }
+        color={color ?? "blue"}
+        lineWidth={2}
+      />
+      {model ? <primitive ref={mesh} object={model} /> : null}
+    </>
+  );
 }
 
 const Reference = ({ color, position }) => {
@@ -239,7 +272,6 @@ export default function Home() {
       try {
         const response = await fetch("/json/checkpoints/coupled.json");
         const dat = await response.json();
-        console.log("this");
         setData(dat);
       } catch (error) {
         console.log(error);
