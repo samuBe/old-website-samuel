@@ -2,6 +2,10 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Typography, Box, Collapse } from "@mui/material";
 import MediaControl from "./MediaControl";
+import DroneStates from "./DroneStates";
+import { InlineMath } from "react-katex";
+import "katex/dist/katex.min.css";
+import Reference from "./Reference";
 
 export default function Telemetry({
   current,
@@ -13,6 +17,31 @@ export default function Telemetry({
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
+  };
+
+  const format = (key, val) => {
+    switch (key) {
+      case "status":
+        // status
+        return <></>;
+      case "t":
+        // time
+        return <InlineMath>{`t: ${val.toFixed(2)}\\text{s}`}</InlineMath>;
+      case "undefined":
+        return <></>;
+      case "drone":
+        return <DroneStates title={key} states={val.states} />;
+      case "leader":
+        return <DroneStates title={key} states={val.states} />;
+      case "reflector":
+        return <DroneStates title={key} states={val.states} />;
+      case "station":
+        return <></>;
+      case "reference":
+        return <Reference title={key} position={val} />;
+      default:
+        return <></>;
+    }
   };
 
   return (
@@ -31,7 +60,9 @@ export default function Telemetry({
         Telemetry
       </Typography>
       <Collapse in={isOpen}>
-        <Typography variant="body1">{current.t}</Typography>
+        <div>
+          {Object.keys(current).map((key) => format(key, current[key]))}
+        </div>
       </Collapse>
       <MediaControl
         isPaused={isPaused}
