@@ -5,7 +5,6 @@ import "katex/dist/katex.min.css";
 
 export default function DroneStates({ title, states }) {
   const [collapse, setCollapse] = useState(true);
-  console.log(states);
 
   const toggleMenu = () => setCollapse(!collapse);
 

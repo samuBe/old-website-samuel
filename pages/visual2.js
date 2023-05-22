@@ -7,6 +7,7 @@ import {
   Sphere,
   useTexture,
   Line,
+  Bounds,
 } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { RepeatWrapping, NearestFilter, DoubleSide } from "three";
@@ -149,6 +150,8 @@ const Scene = ({ data }) => {
   const [speed, setSpeed] = useState(1);
   const [isPaused, setIsPaused] = useState(false);
 
+  const camera = useRef();
+
   const refIndex = () => {
     const refInd = ind + speed;
     if (refInd < 0) {
@@ -186,7 +189,13 @@ const Scene = ({ data }) => {
         setSpeed={setSpeed}
         isPaused={isPaused}
       />
-      <Canvas>
+      <Canvas
+        camera={{
+          position: [-10, 10, 5],
+          fov: 45,
+          rotation: [Math.PI / 4, Math.PI / 4, 0],
+        }}
+      >
         <color attach="background" args={["#87ceeb"]} />
         <Ground />
         <Players
@@ -195,11 +204,12 @@ const Scene = ({ data }) => {
           max={data.results.length}
           timeStep={data.timeStep}
         />
-        <>{data.players.map((element) => initPlayer(element))}</>
-        <Reference position={data.results[refIndex()].reference} />
-        <OrbitControls />
+        <Bounds fit clip observe margin={1.1}>
+          <>{data.players.map((element) => initPlayer(element))}</>
+          <Reference position={data.results[refIndex()].reference} />
+        </Bounds>
+        <OrbitControls makeDefault={true} />
         <ambientLight intensity={0.5} />
-        <perspectiveCamera position={[0, 10, 20]} fov={45} />
       </Canvas>
     </IndContext.Provider>
   );
