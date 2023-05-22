@@ -26,19 +26,21 @@ export default function Telemetry({
         return <></>;
       case "t":
         // time
-        return <InlineMath>{`t: ${val.toFixed(2)}\\text{s}`}</InlineMath>;
+        return (
+          <InlineMath key={key}>{`t: ${val.toFixed(2)}\\text{s}`}</InlineMath>
+        );
       case "undefined":
         return <></>;
       case "drone":
-        return <DroneStates title={key} states={val.states} />;
+        return <DroneStates key={key} title={key} states={val.states} />;
       case "leader":
-        return <DroneStates title={key} states={val.states} />;
+        return <DroneStates key={key} title={key} states={val.states} />;
       case "reflector":
-        return <DroneStates title={key} states={val.states} />;
+        return <DroneStates key={key} title={key} states={val.states} />;
       case "station":
         return <></>;
       case "reference":
-        return <Reference title={key} position={val} />;
+        return <Reference key={key} title={key} position={val} />;
       default:
         return <></>;
     }
@@ -52,7 +54,7 @@ export default function Telemetry({
         left: 0,
         zIndex: 100,
         background: "rgba(255, 255, 255, 0.8)",
-        padding: "8px",
+        padding: "16px",
         borderRadius: "4px",
       }}
     >

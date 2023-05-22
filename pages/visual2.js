@@ -2,11 +2,11 @@
 import React, { Suspense, use, useContext, useEffect, useRef } from "react";
 import { Canvas } from "@react-three/fiber";
 import {
-  Html,
   OrbitControls,
   Plane,
   Sphere,
   useTexture,
+  Line,
 } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { RepeatWrapping, NearestFilter, DoubleSide } from "three";
@@ -15,6 +15,7 @@ import Telemetry from "@/components/telemetry";
 import { useState } from "react";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import * as THREE from "three";
+import { useThree } from "@react-three/fiber";
 
 const IndContext = React.createContext({ ind: 0, setInd: () => {} });
 
@@ -58,6 +59,47 @@ function Drone({ states }) {
 
   return model ? <primitive ref={mesh} object={model} /> : null;
 }
+
+const Reference = ({ color, position }) => {
+  const mesh = useRef();
+
+  useEffect(() => {
+    if (mesh.current) {
+      mesh.current.position.x = position[0];
+      mesh.current.position.y = position[1];
+      mesh.current.position.z = position[2];
+    }
+  });
+
+  return (
+    <Sphere ref={mesh} args={[0.1, 64, 64]}>
+      <meshBasicMaterial color={color ?? "#00ff83"} />
+    </Sphere>
+  );
+};
+
+const Laser = ({ angles }) => {
+  const mesh = useRef();
+  const end = useRef([5, 0, 0]);
+  const begin = [0, 0, 0];
+
+  useEffect(() => {
+    if (mesh.current) {
+      //update the direction
+      let theta = angles[0];
+      let phi = angles[1];
+      let direction = Array(3);
+      direction[0] = Math.sin(phi) * Math.cos(theta);
+      direction[1] = Math.sin(phi) * Math.sin(theta);
+      direction[2] = Math.cos(phi);
+      end.current = direction.map((el) => 10 * el);
+    }
+  }, [angles]);
+
+  return (
+    <Line ref={mesh} points={[begin, end.current]} color="red" lineWidth={2} />
+  );
+};
 
 function Ground() {
   const texture = useTexture("/textures/grass.png");
@@ -107,6 +149,35 @@ const Scene = ({ data }) => {
   const [speed, setSpeed] = useState(1);
   const [isPaused, setIsPaused] = useState(false);
 
+  const refIndex = () => {
+    const refInd = ind + speed;
+    if (refInd < 0) {
+      return 0;
+    }
+    if (refInd >= data.results.length) {
+      return ind;
+    }
+    return refInd;
+  };
+
+  const initPlayer = (playerName) => {
+    switch (playerName) {
+      case "drone":
+        return (
+          <Drone key={playerName} states={data.results[ind].drone.states} />
+        );
+      case "station":
+        return (
+          <>
+            <Reference color="black" position={[0, 0, 0]} />
+            <Laser angles={data.results[ind].station.states} />
+          </>
+        );
+      default:
+        return <></>;
+    }
+  };
+
   return (
     <IndContext.Provider value={{ ind, setInd }}>
       <Telemetry
@@ -124,7 +195,8 @@ const Scene = ({ data }) => {
           max={data.results.length}
           timeStep={data.timeStep}
         />
-        <Drone states={data.results[ind].drone.states} />
+        <>{data.players.map((element) => initPlayer(element))}</>
+        <Reference position={data.results[refIndex()].reference} />
         <OrbitControls />
         <ambientLight intensity={0.5} />
         <perspectiveCamera position={[0, 10, 20]} fov={45} />
@@ -133,13 +205,29 @@ const Scene = ({ data }) => {
   );
 };
 
+const Camera = ({ position }) => {
+  const { camera, set } = useThree();
+
+  useEffect(() => {
+    console.log(position);
+    if (camera.current) {
+      camera.position.x = position.x;
+      camera.position.y = position.y;
+      camera.position.z = position.z;
+      set({ target: center, position: camera.position });
+    }
+  }, [position, camera, set]);
+
+  return <></>;
+};
+
 export default function Home() {
   const [data, setData] = useState(null);
 
   useEffect(() => {
     (async () => {
       try {
-        const response = await fetch("/debug.json");
+        const response = await fetch("/json/checkpoints/coupled.json");
         const dat = await response.json();
         console.log("this");
         setData(dat);
