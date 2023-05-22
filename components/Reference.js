@@ -5,7 +5,6 @@ import "katex/dist/katex.min.css";
 
 export default function Reference({ title, position }) {
   const [collapse, setCollapse] = useState(true);
-  console.log(states);
 
   const toggleMenu = () => setCollapse(!collapse);
 
