@@ -1,5 +1,5 @@
 // Telemetry.tsx
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState } from "react";
 import { Typography, Box, Collapse } from "@mui/material";
 import MediaControl from "./MediaControl";
 import DroneStates from "./DroneStates";
@@ -54,17 +54,20 @@ export default function Telemetry({
         left: 0,
         zIndex: 100,
         background: "rgba(255, 255, 255, 0.8)",
-        padding: "16px",
+        padding: "6px",
         borderRadius: "4px",
+        width: "12em",
       }}
     >
       <Typography variant="h6" sx={{ cursor: "pointer" }} onClick={toggleMenu}>
         Telemetry
       </Typography>
       <Collapse in={isOpen}>
-        <div>
-          {Object.keys(current).map((key) => format(key, current[key]))}
-        </div>
+        <Box sx={{ maxHeight: "300px", overflowY: "auto" }}>
+          <div>
+            {Object.keys(current).map((key) => format(key, current[key]))}
+          </div>
+        </Box>
       </Collapse>
       <MediaControl
         isPaused={isPaused}
