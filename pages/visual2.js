@@ -18,6 +18,7 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import * as THREE from "three";
 import { useThree } from "@react-three/fiber";
 import { zip } from "lodash";
+import SpacebarTogglePause from "@/components/SpaceBarToggle";
 
 const IndContext = React.createContext({ ind: 0, setInd: () => {} });
 
@@ -222,6 +223,7 @@ const Scene = ({ data }) => {
         setSpeed={setSpeed}
         isPaused={isPaused}
       />
+      <SpacebarTogglePause setIsPaused={setIsPaused} />
       <Canvas
         camera={{
           position: [-10, 10, 5],
