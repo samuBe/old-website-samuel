@@ -24,6 +24,7 @@
     "react-dom": "18.2.0",
     "react-icons": "^4.8.0",
     "react-katex": "^3.0.1",
+    "spectacle": "^10.1.4",
     "styled-components": "^5.3.10",
     "three": "^0.152.2",
     "three-stdlib": "^2.21.10"
