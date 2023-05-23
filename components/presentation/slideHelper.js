@@ -1,30 +1,45 @@
+import Head from "next/head";
 import { useState, useEffect } from "react";
 import React from "react";
-import { OrderedList, Slide as SpectacleSlide, ListItem } from "spectacle";
+import {
+  OrderedList,
+  Slide as SpectacleSlide,
+  ListItem,
+  Box,
+  DefaultTemplate,
+} from "spectacle";
 import { Heading } from "spectacle";
+import { Deck as SlideDeck } from "spectacle";
 
-export const Deck = ({ template, children }) => {
+export const Deck = ({ template, children, theme }) => {
   const [outline, setOutline] = useState([]);
 
   useEffect(() => {
     const titles = React.Children.toArray(children).map(
-      (child, index) => `Chapter ${index + 1}: ${child.props.title}`
+      (child, index) => `${child.props.title}`
     );
     setOutline(titles);
   }, [children]);
 
   return (
-    <>
+    <SlideDeck template={template} theme={theme}>
+      <div style={{ zIndex: 2 }}>
+        <SpectacleSlide>
+          <Heading>Text</Heading>
+        </SpectacleSlide>
+      </div>
       <SpectacleSlide>
         <Heading textAlign={"left"}>Outline</Heading>
-        <OrderedList>
-          {outline.map((title, index) => (
-            <ListItem key={index}>{title}</ListItem>
-          ))}
-        </OrderedList>
+        <Box paddingLeft={30}>
+          <OrderedList>
+            {outline.map((title, index) => (
+              <ListItem key={index}>{title}</ListItem>
+            ))}
+          </OrderedList>
+        </Box>
       </SpectacleSlide>
       {children}
-    </>
+    </SlideDeck>
   );
 };
 
