@@ -11,7 +11,7 @@ const theme = {
     text: '"Helvetica Neue", Helvetica, Arial, sans-serif',
   },
   fontSizes: {
-    header: "32px",
+    header: "56px",
     paragraph: "28px",
   },
   space: [0, 16, 32],

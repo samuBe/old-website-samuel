@@ -1,13 +1,6 @@
-import Head from "next/head";
 import { useState, useEffect } from "react";
 import React from "react";
-import {
-  OrderedList,
-  Slide as SpectacleSlide,
-  ListItem,
-  Box,
-  DefaultTemplate,
-} from "spectacle";
+import { OrderedList, Slide as SpectacleSlide, ListItem, Box } from "spectacle";
 import { Heading } from "spectacle";
 import { Deck as SlideDeck } from "spectacle";
 
