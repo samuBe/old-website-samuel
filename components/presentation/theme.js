@@ -10,6 +10,11 @@ const theme = {
     header: '"Helvetica Neue", Helvetica, Arial, sans-serif',
     text: '"Helvetica Neue", Helvetica, Arial, sans-serif',
   },
+  fontSizes: {
+    header: "32px",
+    paragraph: "28px",
+  },
+  space: [0, 16, 32],
 };
 
 export default theme;

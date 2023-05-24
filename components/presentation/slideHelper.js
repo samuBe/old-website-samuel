@@ -11,7 +11,7 @@ import {
 import { Heading } from "spectacle";
 import { Deck as SlideDeck } from "spectacle";
 
-export const Deck = ({ template, children, theme }) => {
+export const Deck = ({ template, children, theme, title }) => {
   const [outline, setOutline] = useState([]);
 
   useEffect(() => {
@@ -22,12 +22,13 @@ export const Deck = ({ template, children, theme }) => {
   }, [children]);
 
   return (
-    <SlideDeck template={template} theme={theme}>
-      <div style={{ zIndex: 2 }}>
-        <SpectacleSlide>
-          <Heading>Text</Heading>
-        </SpectacleSlide>
-      </div>
+    <SlideDeck
+      template={(props) => {
+        return template({ title, ...props });
+      }}
+      theme={theme}
+    >
+      <SpectacleSlide></SpectacleSlide>
       <SpectacleSlide>
         <Heading textAlign={"left"}>Outline</Heading>
         <Box paddingLeft={30}>

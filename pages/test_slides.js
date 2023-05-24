@@ -6,7 +6,15 @@ import { Deck as SlideDeck } from "spectacle";
 
 function App() {
   return (
-    <Deck template={KulTemplate} theme={theme}>
+    <Deck
+      template={KulTemplate}
+      theme={theme}
+      title={{
+        author: "Samuel Berton",
+        subtitle: "2023.05.25",
+        title: "Thesis Meeting 22",
+      }}
+    >
       <Chapter title="test">
         <Slide title="Introduction">
           <p>This is the introduction slide.</p>

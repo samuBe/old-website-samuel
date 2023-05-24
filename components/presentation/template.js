@@ -3,10 +3,17 @@ import { FullScreen } from "spectacle";
 import { AnimatedProgress } from "spectacle";
 import React from "react";
 import theme from "./theme";
+import { Heading } from "spectacle";
 
 // The 16 is due to the nature of the box, replace with materialui
 
-const TitleSlide = () => {
+const TitleSlide = ({
+  title = "title",
+  author = "author",
+  subtitle = "subtitle",
+  institute = "KU Leuven",
+  year = "2022-2023",
+}) => {
   return (
     <>
       <Box
@@ -15,7 +22,6 @@ const TitleSlide = () => {
         position={"absolute"}
         height={"90%"}
         width={1}
-        marginBottom={-16}
       >
         <Box position={"relative"} left={40} marginTop={-40}>
           <Image
@@ -25,12 +31,36 @@ const TitleSlide = () => {
             alt="Logo KU Leuven"
           ></Image>
         </Box>
+        <Box padding={24}>
+          <Box paddingTop={60} maxWidth={"80%"}>
+            <Heading
+              textAlign={"start"}
+              color={"white"}
+              paddingBottom={0}
+              fontSize={"56px"}
+            >
+              {title}
+            </Heading>
+            <Heading fontSize={"36px"} textAlign={"start"} color={"white"}>
+              {subtitle}
+            </Heading>
+          </Box>
+          <Box paddingTop={30}>
+            <Heading textAlign={"start"} fontSize={"24px"} color={"white"}>
+              {author}
+            </Heading>
+            <Heading textAlign={"start"} fontSize={"24px"} color={"white"}>
+              {institute}
+            </Heading>
+            <Heading textAlign={"start"} fontSize={"24px"} color={"white"}>
+              {year}
+            </Heading>
+          </Box>
+        </Box>
         <Box
           position={"absolute"}
           right={0}
-          marginRight={-16}
           bottom={0}
-          marginBottom={-16}
           marginTop={-40}
           zIndex={2}
         >
@@ -51,7 +81,6 @@ const TitleSlide = () => {
         backgroundColor={theme.colors.secondary}
         paddingTop={20}
         paddingBottom={20}
-        marginBottom={-16}
       >
         <FlexBox left="15em" alignItems={"center"} justifyContent={"center"}>
           <Box padding="8px 1em 0px">
@@ -78,7 +107,6 @@ const NormalSlide = () => {
         backgroundColor={theme.colors.secondary}
         paddingTop={20}
         paddingBottom={20}
-        marginBottom={-16}
       >
         <FlexBox left="15em" alignItems={"center"} justifyContent={"center"}>
           <Box padding="8px 1em 0px">
@@ -101,6 +129,6 @@ const NormalSlide = () => {
   );
 };
 
-export const KulTemplate = ({ slideNumber, numberOfSlides }) => {
-  return slideNumber == 1 ? <TitleSlide /> : <NormalSlide />;
+export const KulTemplate = ({ title, slideNumber, numberOfSlides }) => {
+  return slideNumber == 1 ? <TitleSlide {...title} /> : <NormalSlide />;
 };
