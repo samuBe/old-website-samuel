@@ -18,7 +18,7 @@ const ContactGrid = () => {
       >
         <Image
           priority
-          src="images/linkedin.svg"
+          src="/images/linkedin.svg"
           alt=""
           width={50}
           height={50}
@@ -28,7 +28,7 @@ const ContactGrid = () => {
       <button className={styles.card} onClick={handleClick}>
         <Image
           priority
-          src="images/email.svg"
+          src="/images/email.svg"
           alt=""
           width={50}
           height={50}

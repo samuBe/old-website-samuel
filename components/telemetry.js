@@ -62,7 +62,7 @@ export default function Telemetry({
       <Typography variant="h6" sx={{ cursor: "pointer" }} onClick={toggleMenu}>
         Telemetry
       </Typography>
-      <Collapse in={isOpen}>
+      <Collapse in={isOpen} style={{ maxHeight: "100%" }}>
         <Box sx={{ maxHeight: "300px", overflowY: "auto" }}>
           <div>
             {Object.keys(current).map((key) => format(key, current[key]))}
