@@ -200,10 +200,42 @@ const Scene = ({ data }) => {
         return (
           <Drone key={playerName} states={data.results[ind].drone.states} />
         );
+      case "leader":
+        return (
+          <Drone key={playerName} states={data.results[ind].leader.states} />
+        );
+      case "reflector":
+        return (
+          <Drone key={playerName} states={data.results[ind].reflector.states} />
+        );
       case "station":
         return (
           <>
             <Reference color="black" position={[0, 0, 0]} />
+            <Line
+              points={[
+                [0, 0, 0],
+                [1, 0, 0],
+              ]}
+              lineWidth={2}
+              color={"red"}
+            />
+            <Line
+              points={[
+                [0, 0, 0],
+                [0, 0, 1],
+              ]}
+              lineWidth={2}
+              color={"blue"}
+            />
+            <Line
+              points={[
+                [0, 0, 0],
+                [0, 1, 0],
+              ]}
+              lineWidth={2}
+              color={"green"}
+            />
             <Laser angles={data.results[ind].station.states} />
           </>
         );
