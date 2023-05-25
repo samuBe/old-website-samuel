@@ -14,8 +14,10 @@ import { RepeatWrapping, NearestFilter, DoubleSide } from "three";
 import Telemetry from "@/components/telemetry";
 import { useState } from "react";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
-import * as THREE from "three";
 import SpacebarTogglePause from "@/components/SpaceBarToggle";
+import { useLoader } from "@react-three/fiber";
+import { useMemo } from "react";
+import { Box3 } from "three";
 
 const IndContext = React.createContext({ ind: 0, setInd: () => {} });
 
@@ -30,31 +32,28 @@ function switchXYZ(variable) {
 
 function Drone({ states, color }) {
   const mesh = useRef();
-  const [model, setModel] = useState();
   const points = useRef([]);
 
-  useEffect(() => {
-    const loader = new GLTFLoader();
-    loader.load("/scene.gltf", (gltf) => {
-      const model = gltf.scene;
+  const gltf = useLoader(GLTFLoader, "/scene.gltf");
 
-      let box = new THREE.Box3().setFromObject(model);
-      let modelWidth = box.max.x - box.min.x;
-      let modelHeight = box.max.y - box.min.y;
-      let modelDepth = box.max.z - box.min.z;
+  const model = useMemo(() => {
+    const model = gltf.scene.clone();
 
-      let scaleX = 0.3 / modelWidth;
-      let scaleY = 0.3 / modelHeight;
-      let scaleZ = 0.3 / modelDepth;
+    let box = new Box3().setFromObject(model);
+    let modelWidth = box.max.x - box.min.x;
+    let modelHeight = box.max.y - box.min.y;
+    let modelDepth = box.max.z - box.min.z;
 
-      let scale = Math.min(scaleX, scaleY, scaleZ);
+    let scaleX = 0.3 / modelWidth;
+    let scaleY = 0.3 / modelHeight;
+    let scaleZ = 0.3 / modelDepth;
 
-      model.scale.set(scale, scale, scale);
+    let scale = Math.min(scaleX, scaleY, scaleZ);
 
-      setModel(model);
-      setModel(gltf.scene);
-    });
-  }, []);
+    model.scale.set(scale, scale, scale);
+
+    return model;
+  }, [gltf]);
 
   useEffect(() => {
     const pos = switchXYZ(states.slice(0, 3));
