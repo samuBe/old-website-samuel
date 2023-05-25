@@ -12,14 +12,15 @@ import {
 } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { RepeatWrapping, NearestFilter, DoubleSide } from "three";
-import Telemetry from "@/components/telemetry";
+import Telemetry from "@/components/Thesis/telemetry";
 import { useState } from "react";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
-import SpacebarTogglePause from "@/components/SpaceBarToggle";
+import SpacebarTogglePause from "@/components/Thesis/SpaceBarToggle";
 import { useLoader } from "@react-three/fiber";
 import { useMemo } from "react";
 import { Box3 } from "three";
 import { GizmoHelper, GizmoViewcube } from "@react-three/drei";
+import { WindTurbine } from "./windturbine";
 
 const IndContext = React.createContext({ ind: 0, setInd: () => {} });
 
@@ -36,7 +37,7 @@ function Drone({ states, color }) {
   const mesh = useRef();
   const points = useRef([]);
 
-  const gltf = useLoader(GLTFLoader, "/scene.gltf");
+  const gltf = useLoader(GLTFLoader, "/drone.glb");
 
   const model = useMemo(() => {
     const model = gltf.scene.clone();
@@ -186,7 +187,7 @@ const Players = ({ speed, isPaused, max, timeStep }) => {
   return <></>;
 };
 
-const Scene = ({ data }) => {
+const Scene = ({ data, children }) => {
   const [ind, setInd] = useState(0);
   const [speed, setSpeed] = useState(1);
   const [isPaused, setIsPaused] = useState(false);
@@ -229,7 +230,6 @@ const Scene = ({ data }) => {
       case "station":
         return (
           <>
-            <Reference color="black" position={[0, 0, 0]} />
             <Line
               points={[
                 [0, 0, 0],
@@ -291,6 +291,7 @@ const Scene = ({ data }) => {
           <Bounds fit clip observe margin={1.1}>
             <>{data.players.map((element) => initPlayer(element))}</>
             <Reference position={data.results[refIndex()].reference} />
+            <Reference color="black" position={[0, 0, 0]} />
           </Bounds>
           <GizmoHelper
             alignment={"bottom-right"} // alignment according to viewport
@@ -302,6 +303,7 @@ const Scene = ({ data }) => {
           </GizmoHelper>
           <OrbitControls makeDefault={true} />
           <ambientLight intensity={0.5} />
+          {children}
         </Canvas>
       </div>
     </IndContext.Provider>
