@@ -24,6 +24,10 @@ function limitedPush(arr, element, maxSize) {
   return arr.slice(Math.max(arr.length - maxSize, 0));
 }
 
+function switchXYZ(variable) {
+  return [variable[1], variable[2], variable[0]];
+}
+
 function Drone({ states, color }) {
   const mesh = useRef();
   const [model, setModel] = useState();
@@ -53,23 +57,26 @@ function Drone({ states, color }) {
   }, []);
 
   useEffect(() => {
+    const pos = switchXYZ(states.slice(0, 3));
     const displacement = Math.sqrt(
-      (points.current[points.current.length - 1] ?? states).reduce(
-        (sum, value, index) => sum + (value - states[index]) ** 2,
+      (points.current[points.current.length - 1] ?? pos).reduce(
+        (sum, value, index) => sum + (value - pos[index]) ** 2,
         0
       )
     );
     if (displacement > 1) {
+      // Avoid teleportation
       points.current = [];
     }
-    points.current = limitedPush(points.current, states.slice(0, 3), 20);
+    points.current = limitedPush(points.current, pos, 20);
     if (mesh.current) {
-      mesh.current.position.x = states[0];
-      mesh.current.position.y = states[1];
-      mesh.current.position.z = states[2];
-      mesh.current.rotation._x = states[6];
-      mesh.current.rotation._y = states[7];
-      mesh.current.rotation._z = states[8];
+      mesh.current.position.x = pos[0];
+      mesh.current.position.y = pos[1];
+      mesh.current.position.z = pos[2];
+      const rot = switchXYZ(states.slice(6, 9));
+      mesh.current.rotation._x = rot[0];
+      mesh.current.rotation._y = rot[1];
+      mesh.current.rotation._z = rot[2];
     }
   }, [states]);
 
@@ -97,11 +104,12 @@ const Reference = ({ color, position }) => {
 
   useEffect(() => {
     if (mesh.current) {
-      mesh.current.position.x = position[0];
-      mesh.current.position.y = position[1];
-      mesh.current.position.z = position[2];
+      const pos = switchXYZ(position);
+      mesh.current.position.x = pos[0];
+      mesh.current.position.y = pos[1];
+      mesh.current.position.z = pos[2];
     }
-  });
+  }, [position]);
 
   return (
     <Sphere ref={mesh} args={[0.1, 64, 64]}>
@@ -124,6 +132,7 @@ const Laser = ({ angles }) => {
       direction[0] = Math.sin(phi) * Math.cos(theta);
       direction[1] = Math.sin(phi) * Math.sin(theta);
       direction[2] = Math.cos(phi);
+      direction = switchXYZ(direction);
       end.current = direction.map((el) => 10 * el);
     }
   }, [angles]);
@@ -202,11 +211,19 @@ const Scene = ({ data }) => {
         );
       case "leader":
         return (
-          <Drone key={playerName} states={data.results[ind].leader.states} />
+          <Drone
+            key={playerName}
+            states={data.results[ind].leader.states}
+            color={"red"}
+          />
         );
       case "reflector":
         return (
-          <Drone key={playerName} states={data.results[ind].reflector.states} />
+          <Drone
+            key={playerName}
+            states={data.results[ind].reflector.states}
+            color={"blue"}
+          />
         );
       case "station":
         return (
