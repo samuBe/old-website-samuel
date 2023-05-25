@@ -8,6 +8,7 @@ import {
   useTexture,
   Line,
   Bounds,
+  GizmoViewport,
 } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { RepeatWrapping, NearestFilter, DoubleSide } from "three";
@@ -18,6 +19,7 @@ import SpacebarTogglePause from "@/components/SpaceBarToggle";
 import { useLoader } from "@react-three/fiber";
 import { useMemo } from "react";
 import { Box3 } from "three";
+import { GizmoHelper, GizmoViewcube } from "@react-three/drei";
 
 const IndContext = React.createContext({ ind: 0, setInd: () => {} });
 
@@ -276,6 +278,7 @@ const Scene = ({ data }) => {
             fov: 45,
             rotation: [Math.PI / 4, Math.PI / 4, 0],
           }}
+          style={{ alignSelf: "center" }}
         >
           <color attach="background" args={["#87ceeb"]} />
           <Ground />
@@ -289,6 +292,14 @@ const Scene = ({ data }) => {
             <>{data.players.map((element) => initPlayer(element))}</>
             <Reference position={data.results[refIndex()].reference} />
           </Bounds>
+          <GizmoHelper
+            alignment={"bottom-right"} // alignment according to viewport
+            margin={[80, 80]} // margin from edges
+            onUpdate={() => true} // make GizmoHelper always visible
+            controls="OrbitControls"
+          >
+            <GizmoViewcube faces={["+Y", "-Y", "+Z", "-Z", "+X", "-X"]} />
+          </GizmoHelper>
           <OrbitControls makeDefault={true} />
           <ambientLight intensity={0.5} />
         </Canvas>
