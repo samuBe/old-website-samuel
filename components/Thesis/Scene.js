@@ -289,19 +289,19 @@ const Scene = ({ data, children }) => {
             mieDirectionalG={0.999998}
           />
           <directionalLight
-            position={[-5, 10, 5]}
+            position={[-50, 200, 50]}
             intensity={0.5}
             color={"#ffe6e5"}
             castShadow={true}
             shadowBias={-0.00001}
-            shadow-camera-near={0.5}
+            shadow-camera-near={50}
             shadow-mapSize-width={1e4}
             shadow-mapSize-height={1e4}
-            shadow-camera-far={200}
+            shadow-camera-far={500}
             shadow-camera-left={-100}
             shadow-camera-right={100}
             shadow-camera-top={100}
-            shadow-camera-bottom={-2}
+            shadow-camera-bottom={-100}
           />
           <hemisphereLight
             skyColor={"#87ceeb"}

@@ -24,6 +24,19 @@ export const WindTurbine = ({
     let scale = scaleZ;
 
     model.scale.set(scale, scale, scale);
+    model.castShadow = true;
+
+    model.traverse((object) => {
+      if (object.isMesh) {
+        object.castShadow = true;
+        object.receiveShadow = true;
+      }
+      if (object.isObject3D) {
+        object.castShadow = true;
+      }
+    });
+
+    console.log(model);
 
     return model;
   }, [gltf, actualHeight]);
