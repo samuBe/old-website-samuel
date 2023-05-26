@@ -1,4 +1,4 @@
-import Scene from "@/components/Scene";
+import Scene from "@/components/Thesis/Scene";
 import { useState, useEffect } from "react";
 import css from "@/styles/Home.module.css";
 
@@ -8,7 +8,7 @@ export default function Home() {
   useEffect(() => {
     (async () => {
       try {
-        const response = await fetch("/json/checkpoints/coupled.json");
+        const response = await fetch("/json/checkpoints/twoDrone.json");
         const dat = await response.json();
         setData(dat);
       } catch (error) {
