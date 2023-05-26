@@ -8,20 +8,17 @@ import {
   useTexture,
   Line,
   Bounds,
-  GizmoViewport,
   Sky,
+  useGLTF,
 } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { RepeatWrapping, NearestFilter, DoubleSide } from "three";
 import Telemetry from "@/components/Thesis/telemetry";
 import { useState } from "react";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import SpacebarTogglePause from "@/components/Thesis/SpaceBarToggle";
-import { useLoader } from "@react-three/fiber";
 import { useMemo } from "react";
 import { Box3 } from "three";
 import { GizmoHelper, GizmoViewcube } from "@react-three/drei";
-import { WindTurbine } from "./windturbine";
 
 const IndContext = React.createContext({ ind: 0, setInd: () => {} });
 
@@ -38,7 +35,7 @@ function Drone({ states, color }) {
   const mesh = useRef();
   const points = useRef([]);
 
-  const gltf = useLoader(GLTFLoader, "/drone.glb");
+  const gltf = useGLTF("/drone.glb");
 
   const model = useMemo(() => {
     const model = gltf.scene.clone();
@@ -55,6 +52,12 @@ function Drone({ states, color }) {
     let scale = Math.min(scaleX, scaleY, scaleZ);
 
     model.scale.set(scale, scale, scale);
+
+    model.traverse((object) => {
+      if (object.isMesh) {
+        object.castShadow = true;
+      }
+    });
 
     return model;
   }, [gltf]);
@@ -84,7 +87,7 @@ function Drone({ states, color }) {
   }, [states]);
 
   return (
-    <>
+    <group>
       <Line
         points={
           points.current.length < 2
@@ -97,10 +100,12 @@ function Drone({ states, color }) {
         color={color ?? "blue"}
         lineWidth={2}
       />
-      {model ? <primitive castShadow ref={mesh} object={model} /> : null}
-    </>
+      {model ? <primitive object={model} ref={mesh} /> : null}
+    </group>
   );
 }
+
+useGLTF.preload("/drone.glb");
 
 const Reference = ({ color, position }) => {
   const mesh = useRef();
@@ -115,7 +120,7 @@ const Reference = ({ color, position }) => {
   }, [position]);
 
   return (
-    <Sphere ref={mesh} args={[0.1, 64, 64]}>
+    <Sphere castShadow={false} ref={mesh} args={[0.1, 64, 64]}>
       <meshBasicMaterial color={color ?? "#00ff83"} />
     </Sphere>
   );
@@ -155,7 +160,11 @@ function Ground() {
   texture.magFilter = NearestFilter;
 
   return (
-    <Plane rotation-x={Math.PI * -0.5} args={[planeSize, planeSize]}>
+    <Plane
+      receiveShadow={true}
+      rotation-x={Math.PI * -0.5}
+      args={[planeSize, planeSize]}
+    >
       <meshPhongMaterial receiveShadow map={texture} side={DoubleSide} />
     </Plane>
   );
@@ -166,23 +175,21 @@ const Players = ({ speed, isPaused, max, timeStep }) => {
   let elapsedTime = useRef(0);
 
   useFrame((state, delta) => {
-    elapsedTime.current += delta;
+    elapsedTime.current += isPaused ? 0 : speed * delta;
 
-    if (elapsedTime.current * Math.abs(speed) > timeStep) {
-      let newInd = isPaused ? ind : ind + Math.sign(speed);
+    let newInd = Math.floor(elapsedTime.current / timeStep);
 
-      // Ensure the index stays within the bounds of the array
-      if (newInd >= max) {
-        newInd = 0;
-      }
-
-      if (newInd < 0) {
-        newInd = max - 1;
-      }
-
-      setInd(newInd);
+    // Ensure the index stays within the bounds of the array
+    if (Math.abs(newInd) >= max) {
+      newInd = 0;
       elapsedTime.current = 0;
     }
+
+    if (newInd < 0) {
+      newInd = newInd + max;
+    }
+
+    setInd(newInd);
   });
 
   return <></>;
@@ -256,7 +263,7 @@ const Scene = ({ data, children }) => {
             rotation: [Math.PI / 4, Math.PI / 4, 0],
           }}
           style={{ alignSelf: "center" }}
-          shadows
+          shadows="soft"
         >
           <color attach="background" args={["#87ceeb"]} />
           <Ground />
@@ -285,44 +292,24 @@ const Scene = ({ data, children }) => {
             position={[-5, 10, 5]}
             intensity={0.5}
             color={"#ffe6e5"}
-            castShadow
-            shadow-mapSize={1024}
-          >
-            <orthographicCamera
-              attach="shadow-camera"
-              args={[-10, 10, -10, 10, 0.1, 50]}
-            />
-          </directionalLight>
+            castShadow={true}
+            shadowBias={-0.00001}
+            shadow-camera-near={0.5}
+            shadow-mapSize-width={1e4}
+            shadow-mapSize-height={1e4}
+            shadow-camera-far={200}
+            shadow-camera-left={-100}
+            shadow-camera-right={100}
+            shadow-camera-top={100}
+            shadow-camera-bottom={-2}
+          />
           <hemisphereLight
             skyColor={"#87ceeb"}
             groundColor={"#617b33"}
             intensity={0.3}
             position={[0, 50, 0]}
           />
-          <Line
-            points={[
-              [0, 0, 0],
-              [1, 0, 0],
-            ]}
-            lineWidth={2}
-            color={"red"}
-          />
-          <Line
-            points={[
-              [0, 0, 0],
-              [0, 0, 1],
-            ]}
-            lineWidth={2}
-            color={"blue"}
-          />
-          <Line
-            points={[
-              [0, 0, 0],
-              [0, 1, 0],
-            ]}
-            lineWidth={2}
-            color={"green"}
-          />
+          <axesHelper />
           <GizmoHelper
             alignment={"bottom-right"} // alignment according to viewport
             margin={[80, 80]} // margin from edges
