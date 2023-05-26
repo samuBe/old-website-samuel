@@ -1,4 +1,4 @@
-import { Visual } from "@/components/loadVisualByJson";
+import { Visual } from "@/components/Thesis/loadVisualByJson";
 import { Deck, Chapter, Slide } from "@/components/presentation/slideHelper";
 import { KulTemplate } from "@/components/presentation/template";
 import theme from "@/components/presentation/theme";
@@ -24,7 +24,7 @@ function App() {
       <Chapter title="Visual Done">
         <Slide title="Created the visual in javascript">
           <FlexBox
-            height={"60%"}
+            height={"70%"}
             alignItems={"top"}
             justifyContent={"space-between"}
           >
