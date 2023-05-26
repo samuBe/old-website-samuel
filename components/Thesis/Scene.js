@@ -9,6 +9,7 @@ import {
   Line,
   Bounds,
   GizmoViewport,
+  Sky,
 } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { RepeatWrapping, NearestFilter, DoubleSide } from "three";
@@ -96,7 +97,7 @@ function Drone({ states, color }) {
         color={color ?? "blue"}
         lineWidth={2}
       />
-      {model ? <primitive ref={mesh} object={model} /> : null}
+      {model ? <primitive castShadow ref={mesh} object={model} /> : null}
     </>
   );
 }
@@ -155,7 +156,7 @@ function Ground() {
 
   return (
     <Plane rotation-x={Math.PI * -0.5} args={[planeSize, planeSize]}>
-      <meshPhongMaterial map={texture} side={DoubleSide} />
+      <meshPhongMaterial receiveShadow map={texture} side={DoubleSide} />
     </Plane>
   );
 }
@@ -230,30 +231,6 @@ const Scene = ({ data, children }) => {
       case "station":
         return (
           <>
-            <Line
-              points={[
-                [0, 0, 0],
-                [1, 0, 0],
-              ]}
-              lineWidth={2}
-              color={"red"}
-            />
-            <Line
-              points={[
-                [0, 0, 0],
-                [0, 0, 1],
-              ]}
-              lineWidth={2}
-              color={"blue"}
-            />
-            <Line
-              points={[
-                [0, 0, 0],
-                [0, 1, 0],
-              ]}
-              lineWidth={2}
-              color={"green"}
-            />
             <Laser angles={data.results[ind].station.states} />
           </>
         );
@@ -279,6 +256,7 @@ const Scene = ({ data, children }) => {
             rotation: [Math.PI / 4, Math.PI / 4, 0],
           }}
           style={{ alignSelf: "center" }}
+          shadows
         >
           <color attach="background" args={["#87ceeb"]} />
           <Ground />
@@ -293,6 +271,58 @@ const Scene = ({ data, children }) => {
             <Reference position={data.results[refIndex()].reference} />
             <Reference color="black" position={[0, 0, 0]} />
           </Bounds>
+          <Sky
+            distance={450000}
+            sunPosition={[-5, 10, 5]}
+            inclination={0}
+            azimuth={0.25}
+            turbidity={20}
+            rayleigh={0.558}
+            mieCoefficient={0.009}
+            mieDirectionalG={0.999998}
+          />
+          <directionalLight
+            position={[-5, 10, 5]}
+            intensity={0.5}
+            color={"#ffe6e5"}
+            castShadow
+            shadow-mapSize={1024}
+          >
+            <orthographicCamera
+              attach="shadow-camera"
+              args={[-10, 10, -10, 10, 0.1, 50]}
+            />
+          </directionalLight>
+          <hemisphereLight
+            skyColor={"#87ceeb"}
+            groundColor={"#617b33"}
+            intensity={0.3}
+            position={[0, 50, 0]}
+          />
+          <Line
+            points={[
+              [0, 0, 0],
+              [1, 0, 0],
+            ]}
+            lineWidth={2}
+            color={"red"}
+          />
+          <Line
+            points={[
+              [0, 0, 0],
+              [0, 0, 1],
+            ]}
+            lineWidth={2}
+            color={"blue"}
+          />
+          <Line
+            points={[
+              [0, 0, 0],
+              [0, 1, 0],
+            ]}
+            lineWidth={2}
+            color={"green"}
+          />
           <GizmoHelper
             alignment={"bottom-right"} // alignment according to viewport
             margin={[80, 80]} // margin from edges
@@ -302,7 +332,6 @@ const Scene = ({ data, children }) => {
             <GizmoViewcube faces={["+Y", "-Y", "+Z", "-Z", "+X", "-X"]} />
           </GizmoHelper>
           <OrbitControls makeDefault={true} />
-          <ambientLight intensity={0.5} />
           {children}
         </Canvas>
       </div>
