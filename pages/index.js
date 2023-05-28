@@ -43,14 +43,14 @@ export default function Home() {
 
         <div className={styles.grid}>
           <Link href="/about" className={styles.card}>
-            <h2>
+            <h2 style={{ margin: 0, paddingBottom: "0.5em" }}>
               About <span>-&gt;</span>
             </h2>
             <p>Here you can find my contact information and bio!</p>
           </Link>
 
           <Link href="/projects" className={styles.card}>
-            <h2>
+            <h2 style={{ margin: 0, paddingBottom: "0.5em" }}>
               Projects <span>-&gt;</span>
             </h2>
             <p>

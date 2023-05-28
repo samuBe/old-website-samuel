@@ -16,7 +16,7 @@ const ProjectCard = ({ image, title, description, link }) => {
         />
       </div>
       <div>
-        <h2>{title}</h2>
+        <h2 style={{ margin: 0 }}>{title}</h2>
         <p>{description}</p>
       </div>
     </Link>
