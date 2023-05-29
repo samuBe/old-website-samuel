@@ -60,7 +60,7 @@ const BrainBrowsR = () => {
               height={50}
               className={styles.vercelLogo}
             />
-            <h2 style={{ marginLeft: "10px", marginBottom: "0" }}>
+            <h2 style={{ marginLeft: "10px", marginBottom: "0", marginTop: 0 }}>
               {"Check it out on GitHub!"}
             </h2>
           </div>

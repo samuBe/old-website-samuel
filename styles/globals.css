@@ -119,6 +119,10 @@ h3 {
   margin-top: 1.25em;
 }
 
+h4 {
+  margin-top: 1em;
+}
+
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;

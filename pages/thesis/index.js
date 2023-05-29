@@ -5,6 +5,7 @@ import Image from "next/image";
 import utilStyles from "@/styles/utils.module.css";
 import styles from "@/styles/Home.module.css";
 import ImageComponent from "@/components/imageComponent.js";
+import { VisualGrid } from "@/components/Thesis/VisualGrid";
 
 const About = () => {
   return (
@@ -69,7 +70,10 @@ const About = () => {
           <li>Familiarize with MPC,</li>
           <li>Use as benchmark.</li>
         </ol>
-
+        <h4>LQR visual</h4>
+        <VisualGrid strategy="lqr" />
+        <h4>MPC visual</h4>
+        <VisualGrid strategy="mpc" />
         <h3>Decoupled</h3>
         <ImageComponent name="/images/thesis/approach_2" />
         <p>Track a drone using the laser to deliver power.</p>
@@ -78,7 +82,8 @@ const About = () => {
           <li>Introduce the ground station,</li>
           <li>Improve this by coupling.</li>
         </ol>
-
+        <h4>Decoupled visual</h4>
+        <VisualGrid strategy="decoupled" />
         <h3>Coupled</h3>
         <ImageComponent name="/images/thesis/approach_3" />
         <p>
@@ -86,13 +91,19 @@ const About = () => {
           used in calculating the control action of the ground station. This
           should improve the charging.
         </p>
-
+        <h4>Coupled visual</h4>
+        <VisualGrid strategy="decoupled" />
         <h3>Multi drone</h3>
         <ImageComponent name="/images/thesis/approach_4" />
         <p>
           When there is no direct line-of-sight, one drone is used to reflect
           the laser onto another to charge it with a mirror.
         </p>
+        <h4>Two Drone visual</h4>
+        For two drones only the checkpoints are made:
+        <Link href={"thesis/checkpoints/twoDrone"} target="_blank">
+          Two drone checkpoints
+        </Link>
       </section>
       <div margin="3rem 0 0">
         <Link href="/projects">← Back to projects</Link>

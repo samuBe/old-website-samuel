@@ -46,7 +46,7 @@ const AFT = () => {
               height={50}
               className={styles.vercelLogo}
             />
-            <h2 style={{ marginLeft: "10px", marginBottom: "0" }}>
+            <h2 style={{ marginLeft: "10px", marginBottom: "0", marginTop: 0 }}>
               {"Check out AFT!"}
             </h2>
           </div>
