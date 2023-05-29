@@ -13,7 +13,6 @@ const DataPage = () => {
     <div className={css.scene}>
       {id && (
         <Visual json={`/json/windturbine/${id}.json`}>
-          <SolarPark />
           <WindTurbine actualHeight={120} positionX={30} />
         </Visual>
       )}

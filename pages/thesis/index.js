@@ -60,7 +60,8 @@ const About = () => {
           </li>
           <li>Delivery: flying longer distances without recharging.</li>
         </ol>
-        <h2>Approach</h2>
+        <h2>Control Strategies</h2>
+        Each introduced control strategies was test and compared in simulation.
         <h3>Single drone</h3>
         <ImageComponent name="/images/thesis/approach_1" />
         <p>Control a single drone so that it tracks a given path.</p>
@@ -102,7 +103,7 @@ const About = () => {
         <h4>Two Drone visual</h4>
         For two drones only the checkpoints are made:
         <Link href={"thesis/checkpoints/twoDrone"} target="_blank">
-          Two drone checkpoints
+          Two drone checkpoints.
         </Link>
       </section>
       <div margin="3rem 0 0">

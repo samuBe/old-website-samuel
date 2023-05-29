@@ -280,8 +280,8 @@ const Scene = ({ data, children }) => {
           </Bounds>
           <Sky
             distance={450000}
-            sunPosition={[-5, 10, 5]}
-            inclination={0}
+            sunPosition={[-0.25, 1.0, 0.25]}
+            inclination={1.5}
             azimuth={0.25}
             turbidity={20}
             rayleigh={0.558}

@@ -45,12 +45,13 @@ export function SolarPanel({ posX = 0, posY = 0 }) {
 }
 
 export const SolarPark = ({
-  nx = 20,
-  ny = 20,
+  nx = 12,
+  ny = 6,
   dX = 1,
   dY = 2,
-  start = [0, 0],
+  start = [-5.5, 12],
 }) => {
+  start[1] += 0.5;
   let path = [start];
   let [x, y] = start;
 
