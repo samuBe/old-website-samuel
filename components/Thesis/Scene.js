@@ -19,6 +19,7 @@ import SpacebarTogglePause from "@/components/Thesis/SpaceBarToggle";
 import { useMemo } from "react";
 import { Box3 } from "three";
 import { GizmoHelper, GizmoViewcube } from "@react-three/drei";
+import * as THREE from "three";
 
 const IndContext = React.createContext({ ind: 0, setInd: () => {} });
 
@@ -97,7 +98,7 @@ function Drone({ states, color }) {
               ]
             : points.current
         }
-        color={color ?? "blue"}
+        color={color ?? "orange"}
         lineWidth={2}
       />
       {model ? <primitive object={model} ref={mesh} /> : null}
@@ -126,10 +127,16 @@ const Reference = ({ color, position }) => {
   );
 };
 
-const Laser = ({ angles }) => {
+const Laser = ({ angles, data }) => {
   const mesh = useRef();
   const end = useRef([5, 0, 0]);
-  const begin = [0, 0, 0];
+  const begin = new THREE.Vector3(0, 0, 0);
+  const normal = new THREE.Vector3(0, -1, 0);
+  const raycaster = new THREE.Raycaster();
+  const mirror = useRef();
+  const leader = useRef();
+  const points = useRef([begin, begin]);
+  //const
 
   useEffect(() => {
     if (mesh.current) {
@@ -141,12 +148,82 @@ const Laser = ({ angles }) => {
       direction[1] = Math.sin(phi) * Math.sin(theta);
       direction[2] = Math.cos(phi);
       direction = switchXYZ(direction);
-      end.current = direction.map((el) => 10 * el);
+
+      // Long laser and reflection
+      const vDir = new THREE.Vector3();
+      vDir.fromArray(direction).normalize();
+
+      let pointsNew = [begin];
+
+      let pos;
+      let intersect;
+      let start = begin;
+      if (data.reflector) {
+        // Reflection
+        pos = switchXYZ(data.reflector.states);
+        mirror.current.position.x = pos[0];
+        mirror.current.position.y = pos[1];
+        mirror.current.position.z = pos[2];
+        console.log(start);
+        console.log(vDir);
+        console.log(mirror.current);
+
+        raycaster.set(start, vDir);
+        console.log(raycaster);
+        console.log(raycaster.intersectObject(mirror.current, false));
+        intersect = raycaster.intersectObject(mirror.current, false)[0];
+        console.log(intersect);
+        if (intersect) {
+          vDir.reflect(normal);
+          start = intersect.point;
+          pointsNew.push(start);
+        } else {
+          vDir.multiplyScalar(1000).add(start);
+          pointsNew.push(vDir);
+        }
+      }
+      // Leader
+      const leaderData = data.leader ?? data.drone;
+      pos = switchXYZ(leaderData.states);
+      console.log(pos);
+      leader.current.position.x = pos[0];
+      leader.current.position.y = pos[1];
+      leader.current.position.z = pos[2];
+
+      raycaster.set(start, vDir);
+      intersect = raycaster.intersectObject(leader.current, false)[0];
+      if (intersect) {
+        pointsNew.push(intersect.point);
+      } else {
+        pointsNew.push(vDir.multiplyScalar(1e6).add(start));
+      }
+      points.current = pointsNew;
     }
-  }, [angles]);
+  }, [angles, data]);
 
   return (
-    <Line ref={mesh} points={[begin, end.current]} color="red" lineWidth={2} />
+    <group>
+      <Line
+        ref={mesh}
+        points={
+          points.current ?? [
+            [0, 0, 0],
+            [0, 0, 0],
+          ]
+        }
+        color="red"
+        lineWidth={2}
+      />
+      <Sphere args={[0.1, 64, 64]} ref={leader}>
+        <meshBasicMaterial visible={false} />
+      </Sphere>
+      <Plane args={[0.18, 0.18]} rotation-x={Math.PI * 0.5} ref={mirror}>
+        <meshBasicMaterial
+          visible={data.reflector ? true : false}
+          side={THREE.DoubleSide}
+        />
+      </Plane>
+    </group>
   );
 };
 
@@ -199,6 +276,8 @@ const Scene = ({ data, children }) => {
   const [ind, setInd] = useState(0);
   const [speed, setSpeed] = useState(1);
   const [isPaused, setIsPaused] = useState(false);
+  const reflector = useRef();
+  const leader = useRef();
 
   const camera = useRef();
 
@@ -224,7 +303,7 @@ const Scene = ({ data, children }) => {
           <Drone
             key={playerName}
             states={data.results[ind].leader.states}
-            color={"red"}
+            color={"orange"}
           />
         );
       case "reflector":
@@ -236,11 +315,7 @@ const Scene = ({ data, children }) => {
           />
         );
       case "station":
-        return (
-          <>
-            <Laser angles={data.results[ind].station.states} />
-          </>
-        );
+        return <></>;
       default:
         return <></>;
     }
@@ -278,6 +353,12 @@ const Scene = ({ data, children }) => {
             <Reference position={data.results[refIndex()].reference} />
             <Reference color="black" position={[0, 0, 0]} />
           </Bounds>
+          {data.results[ind].station && (
+            <Laser
+              angles={data.results[ind].station.states}
+              data={data.results[ind]}
+            />
+          )}
           <Sky
             distance={450000}
             sunPosition={[-0.25, 1.0, 0.25]}

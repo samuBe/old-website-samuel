@@ -241,8 +241,8 @@
     grid-template-columns: repeat(2, 50%);
   }
 
-  .grid {
-    grid-template-columns: repeat(3, 50%);
+  .grid3 {
+    grid-template-columns: repeat(2, 50%);
   }
 }
 
