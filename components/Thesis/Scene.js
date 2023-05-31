@@ -19,7 +19,7 @@ import SpacebarTogglePause from "@/components/Thesis/SpaceBarToggle";
 import { useMemo } from "react";
 import { Box3 } from "three";
 import { GizmoHelper, GizmoViewcube } from "@react-three/drei";
-import * as THREE from "three";
+import { Raycaster, Vector3 } from "three";
 
 const IndContext = React.createContext({ ind: 0, setInd: () => {} });
 
@@ -129,10 +129,10 @@ const Reference = ({ color, position }) => {
 
 const Laser = ({ angles, data }) => {
   const mesh = useRef();
-  const end = useRef([5, 0, 0]);
-  const begin = new THREE.Vector3(0, 0, 0);
-  const normal = new THREE.Vector3(0, -1, 0);
-  const raycaster = new THREE.Raycaster();
+  const begin = new Vector3(0, 0, 0);
+  const normal = new Vector3(0, -1, 0);
+  const raycaster = new Raycaster();
+  const vDir = new Vector3(0, 0, 0);
   const mirror = useRef();
   const leader = useRef();
   const points = useRef([begin, begin]);
@@ -150,7 +150,6 @@ const Laser = ({ angles, data }) => {
       direction = switchXYZ(direction);
 
       // Long laser and reflection
-      const vDir = new THREE.Vector3();
       vDir.fromArray(direction).normalize();
 
       let pointsNew = [begin];
@@ -164,15 +163,9 @@ const Laser = ({ angles, data }) => {
         mirror.current.position.x = pos[0];
         mirror.current.position.y = pos[1];
         mirror.current.position.z = pos[2];
-        console.log(start);
-        console.log(vDir);
-        console.log(mirror.current);
 
         raycaster.set(start, vDir);
-        console.log(raycaster);
-        console.log(raycaster.intersectObject(mirror.current, false));
         intersect = raycaster.intersectObject(mirror.current, false)[0];
-        console.log(intersect);
         if (intersect) {
           vDir.reflect(normal);
           start = intersect.point;
@@ -185,7 +178,6 @@ const Laser = ({ angles, data }) => {
       // Leader
       const leaderData = data.leader ?? data.drone;
       pos = switchXYZ(leaderData.states);
-      console.log(pos);
       leader.current.position.x = pos[0];
       leader.current.position.y = pos[1];
       leader.current.position.z = pos[2];
@@ -220,7 +212,7 @@ const Laser = ({ angles, data }) => {
       <Plane args={[0.18, 0.18]} rotation-x={Math.PI * 0.5} ref={mirror}>
         <meshBasicMaterial
           visible={data.reflector ? true : false}
-          side={THREE.DoubleSide}
+          side={DoubleSide}
         />
       </Plane>
     </group>
@@ -276,10 +268,6 @@ const Scene = ({ data, children }) => {
   const [ind, setInd] = useState(0);
   const [speed, setSpeed] = useState(1);
   const [isPaused, setIsPaused] = useState(false);
-  const reflector = useRef();
-  const leader = useRef();
-
-  const camera = useRef();
 
   const refIndex = () => {
     const refInd = ind + speed;
@@ -314,10 +302,8 @@ const Scene = ({ data, children }) => {
             color={"blue"}
           />
         );
-      case "station":
-        return <></>;
       default:
-        return <></>;
+        return null;
     }
   };
 
