@@ -1,6 +1,6 @@
 import { Collapse, Typography } from "@mui/material";
 import { useState } from "react";
-import { InlineMath, BlockMath } from "react-katex";
+import { InlineMath } from "react-katex";
 import "katex/dist/katex.min.css";
 
 export default function DroneStates({ title, states }) {
@@ -44,7 +44,7 @@ export default function DroneStates({ title, states }) {
       <Collapse in={collapse}>
         {states.map((element, index) => (
           <div key={index}>
-            <InlineMath key={index}>
+            <InlineMath key={`${title}_${index}`}>
               {`${names[index]}: ${element.toFixed(2)} \\text{${units[index]}}`}
             </InlineMath>
           </div>

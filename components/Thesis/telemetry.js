@@ -23,26 +23,24 @@ export default function Telemetry({
     switch (key) {
       case "status":
         // status
-        return <></>;
+        return null;
       case "t":
         // time
         return (
           <InlineMath key={key}>{`t: ${val.toFixed(2)}\\text{s}`}</InlineMath>
         );
       case "undefined":
-        return <></>;
+        return null;
       case "drone":
         return <DroneStates key={key} title={key} states={val.states} />;
       case "leader":
         return <DroneStates key={key} title={key} states={val.states} />;
       case "reflector":
         return <DroneStates key={key} title={key} states={val.states} />;
-      case "station":
-        return <></>;
       case "reference":
         return <Reference key={key} title={key} position={val} />;
       default:
-        return <></>;
+        return null;
     }
   };
 

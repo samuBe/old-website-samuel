@@ -17,7 +17,7 @@ export default function Reference({ title, position }) {
       </Typography>
       <Collapse in={collapse}>
         {position.map((element, index) => (
-          <div key={index}>
+          <div key={`${title}_${index}`}>
             <InlineMath key={index}>
               {`${names[index]}: ${element.toFixed(2)} \\text{${units[index]}}`}
             </InlineMath>
