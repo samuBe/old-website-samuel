@@ -206,7 +206,7 @@ const Laser = ({ angles, data }) => {
         color="red"
         lineWidth={2}
       />
-      <Sphere args={[0.1, 64, 64]} ref={leader}>
+      <Sphere args={[0.09, 64, 64]} ref={leader}>
         <meshBasicMaterial visible={false} />
       </Sphere>
       <Plane args={[0.18, 0.18]} rotation-x={Math.PI * 0.5} ref={mirror}>
