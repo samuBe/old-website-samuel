@@ -93,7 +93,7 @@ const About = () => {
           should improve the charging.
         </p>
         <h4>Coupled visual</h4>
-        <VisualGrid strategy="decoupled" />
+        <VisualGrid strategy="coupled" />
         <h3>Multi drone</h3>
         <ImageComponent name="/images/thesis/approach_4" />
         <p>
